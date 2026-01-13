@@ -15,7 +15,7 @@ const CarouselDots = ({ totalDots, currentDotIndex, handleDotClick }: CarouselDo
             key={index}
             onClick={() => handleDotClick(index)}
             className={`h-2 rounded-full transition-all duration-300 focus:outline-none ${
-              isActive ? 'w-8 bg-gray-800' : 'w-2 bg-gray-300 hover:bg-gray-400'
+              isActive ? 'w-8 bg-[#4A4A4A]' : 'w-2 bg-gray-300 hover:bg-gray-400'
             }`}
             aria-label={`Go to feature ${index + 1}`}
           />

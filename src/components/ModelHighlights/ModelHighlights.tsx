@@ -21,9 +21,9 @@ const ModelHighlights = ({ highlights }: ModelHighlightsProps) => {
                         />
                     </div>
                     <div className="flex-1 space-y-6">
-                        <h3 className="text-2xl md:text-3xl font-bold text-[#373737]">{highlight.title}</h3>
+                        <h3 className="text-[20px] md:text-[20px] font-[600] text-[#373737] md:mx-20">{highlight.title}</h3>
                         <div 
-                            className="prose text-gray-600 leading-relaxed" 
+                            className="text-sm prose text-[#373737] font-[400] leading-[27px] md:mx-20" 
                             dangerouslySetInnerHTML={{ __html: highlight.content }} 
                         />
                     </div>
