@@ -1,6 +1,6 @@
 # EGO Challenge - Frontend
 
-Aplicación Frontend challenge para EGO Agency, contruida con React, TypeScript y Vite.
+Aplicación Frontend challenge para EGO Agency, contruida con React, TypeScript y Vite. Integrando Axios, react-router-dom y TailwindCSS.
 
 ## Requisitos
 

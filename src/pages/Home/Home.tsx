@@ -27,7 +27,6 @@ const Home = () => {
     <div className="py-12 px-4 max-w-[1200px] mx-auto mt-8">
       <h1 className="text-4xl md:text-6xl font-[700] text-left mb-8 -mt-10 md:mb-16 md:-mt-2 text-[#373737] tracking-tight">Descubrí todos los modelos</h1>
       
-      {/* Filters and Sort Bar */}
       <div className="flex flex-row justify-between items-center border-b border-gray-200 pb-4 mb-12 gap-4 relative z-30">
           
           <FilterBar 

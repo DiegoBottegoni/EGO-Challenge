@@ -8,7 +8,6 @@ export const useModelDetail = (id: string | undefined) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Save to localStorage for Navbar "Ficha de modelo" logic
     if (id) {
         localStorage.setItem('lastVisitedModelId', id);
     }

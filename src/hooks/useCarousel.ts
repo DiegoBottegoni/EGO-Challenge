@@ -7,8 +7,6 @@ export const useCarousel = (features: ModelFeature[]) => {
   const [isPaused, setIsPaused] = useState(false);
   const animationFrameRef = useRef<number | null>(null);
 
-  // Multiply features for seamless infinite scroll
-  // 9 copies ensures ample buffer for wide screens and smooth scrolling
   const displayFeatures = [...features, ...features, ...features, ...features, ...features, ...features, ...features, ...features, ...features];
   const totalDots = Math.max(features.length, 3); 
 
@@ -24,7 +22,6 @@ export const useCarousel = (features: ModelFeature[]) => {
     }
   };
 
-  // Helper to get precise item width including gap
   const getScrollStride = (container: HTMLDivElement) => {
     if (!container.firstElementChild) return 0;
     const itemWidth = (container.firstElementChild as HTMLElement).offsetWidth;
@@ -63,7 +60,6 @@ export const useCarousel = (features: ModelFeature[]) => {
     };
   }, [isPaused, displayFeatures.length, features.length]);
 
-  // Track active dot & Initial positioning
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -81,7 +77,6 @@ export const useCarousel = (features: ModelFeature[]) => {
     };
 
     const stride = getScrollStride(container);
-    // Initialize position to hide start padding gap if needed
     if (container.scrollLeft === 0 && stride > 0) {
         container.scrollLeft = stride * features.length;
     }
@@ -101,7 +96,6 @@ export const useCarousel = (features: ModelFeature[]) => {
     let bestIndex = currentRealIndex;
     let minDiff = Infinity;
     
-    // Find closest index that matches the target dot
     for (let i = -totalDots; i <= totalDots; i++) {
         const candidateIndex = currentRealIndex + i;
         const candidateDot = ((candidateIndex - features.length) % totalDots + totalDots) % totalDots;

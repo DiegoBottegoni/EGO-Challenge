@@ -10,7 +10,7 @@ const Layout = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-row bg-gray-50 font-sans">
+    <div className="min-h-screen flex flex-row bg-gray-50">
       <Navbar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
       <main className="flex-1 w-full max-w-full pt-16">
         <Outlet />

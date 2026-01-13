@@ -28,14 +28,13 @@ export const useModelFilter = (models: Model[]) => {
       case SORT_OPTIONS.PRICE_DESC:
         result.sort((a, b) => b.price - a.price);
         break;
-      case SORT_OPTIONS.YEAR_DESC: // Newest first
+      case SORT_OPTIONS.YEAR_DESC:
         result.sort((a, b) => b.year - a.year);
         break;
-      case SORT_OPTIONS.YEAR_ASC: // Oldest first
+      case SORT_OPTIONS.YEAR_ASC:
         result.sort((a, b) => a.year - b.year);
         break;
       default:
-        // 'nada' - keep api order
         break;
     }
 
