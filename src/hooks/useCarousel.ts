@@ -6,47 +6,59 @@ export const useCarousel = (features: ModelFeature[]) => {
   const [currentDotIndex, setCurrentDotIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const animationFrameRef = useRef<number | null>(null);
+  const [isOverflowing, setIsOverflowing] = useState(true);
 
-  const displayFeatures = [...features, ...features, ...features, ...features, ...features, ...features, ...features, ...features, ...features];
-  const totalDots = Math.max(features.length, 3); 
+  const totalDots = 3;
+  const displayFeatures = features;
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+      scrollContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+      scrollContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
     }
   };
 
   const getScrollStride = (container: HTMLDivElement) => {
     if (!container.firstElementChild) return 0;
     const itemWidth = (container.firstElementChild as HTMLElement).offsetWidth;
-    const gap = 24; 
+    const gap = 16;
     return itemWidth + gap;
   };
 
-  // Auto-rotation (Marquee)
+  useEffect(() => {
+    const checkOverflow = () => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+      setIsOverflowing(container.scrollWidth > container.clientWidth);
+    };
+
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, [features.length]);
+
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     const animate = () => {
-      if (!isPaused) {
-        container.scrollLeft += 0.5; 
+      // Don't auto-scroll if content fits
+      if (!isOverflowing) return;
 
-        const stride = getScrollStride(container);
-        if (stride === 0) return;
+      const stride = getScrollStride(container);
 
-        const scrollLeft = container.scrollLeft;
-        const featureSetWidth = stride * features.length;
-        
-        if (scrollLeft >= featureSetWidth * 2) { 
-           container.scrollLeft -= featureSetWidth;
+      if (stride > 0 && !isPaused) {
+        // Auto-scroll logic (Standard Marquee)
+        // If we haven't reached the end, scroll.
+        if (container.scrollLeft < container.scrollWidth - container.clientWidth) {
+          container.scrollLeft += 1;
         }
+        // If reached end, do nothing (Stay at end)
       }
       animationFrameRef.current = requestAnimationFrame(animate);
     };
@@ -58,7 +70,7 @@ export const useCarousel = (features: ModelFeature[]) => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isPaused, displayFeatures.length, features.length]);
+  }, [isPaused, isOverflowing, features.length]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -69,49 +81,50 @@ export const useCarousel = (features: ModelFeature[]) => {
       if (stride === 0) return;
 
       const scrollLeft = container.scrollLeft;
-      const realIndex = Math.round(scrollLeft / stride);
-      
-      const shiftedIndex = realIndex - features.length;
-      const currentIndex = ((shiftedIndex % totalDots) + totalDots) % totalDots;
-      setCurrentDotIndex(currentIndex);
-    };
 
-    const stride = getScrollStride(container);
-    if (container.scrollLeft === 0 && stride > 0) {
-        container.scrollLeft = stride * features.length;
-    }
+      // Force last dot if we reached the end (within 10px tolerance)
+      if (scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+        setCurrentDotIndex(2);
+        return;
+      }
+
+      const index = Math.round(scrollLeft / stride);
+
+      // Map physical index to 3 dots (0, 1, 2)
+      setCurrentDotIndex(index % 3);
+    };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
-  }, [displayFeatures.length, features.length, totalDots]);
+  }, [features, totalDots]);
 
   const handleDotClick = (targetIndex: number) => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     const stride = getScrollStride(container);
-    const currentScroll = container.scrollLeft;
-    const currentRealIndex = Math.round(currentScroll / stride);
-    
-    let bestIndex = currentRealIndex;
+
+    // Find closest physical index matching the target dot
+    const current = Math.round(container.scrollLeft / stride);
+    let bestK = -1;
     let minDiff = Infinity;
-    
-    for (let i = -totalDots; i <= totalDots; i++) {
-        const candidateIndex = currentRealIndex + i;
-        const candidateDot = ((candidateIndex - features.length) % totalDots + totalDots) % totalDots;
-        if (candidateDot === targetIndex) {
-            const diff = Math.abs(candidateIndex - currentRealIndex);
-            if (diff < minDiff) {
-                minDiff = diff;
-                bestIndex = candidateIndex;
-            }
+
+    for (let k = 0; k < features.length; k++) {
+      if (k % 3 === targetIndex) {
+        const diff = Math.abs(k - current);
+        if (diff < minDiff) {
+          minDiff = diff;
+          bestK = k;
         }
+      }
     }
 
-    container.scrollTo({
-        left: bestIndex * stride,
+    if (bestK !== -1) {
+      container.scrollTo({
+        left: bestK * stride,
         behavior: 'smooth'
-    });
+      });
+    }
   };
 
   return {
@@ -123,6 +136,7 @@ export const useCarousel = (features: ModelFeature[]) => {
     setIsPaused,
     scrollLeft,
     scrollRight,
-    handleDotClick
+    handleDotClick,
+    isOverflowing
   };
 };
