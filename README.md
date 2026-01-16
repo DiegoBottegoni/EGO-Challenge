@@ -61,3 +61,10 @@ Esto creará una carpeta `dist` con los assets compilados.
 - `src/services`: Servicios de integración con la API.
 - `src/types`: Definiciones de tipos TypeScript.
 - `src/constants`: Constantes de configuración.
+
+## Testing
+
+Basic integration tests were added after delivery in a separate branch
+to validate key UI states (loading, empty data, rendering with limited API responses).
+
+Tests focus on visible behavior rather than internal implementation details.
