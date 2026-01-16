@@ -64,7 +64,6 @@ Esto creará una carpeta `dist` con los assets compilados.
 
 ## Testing
 
-Basic integration tests were added after delivery in a separate branch
-to validate key UI states (loading, empty data, rendering with limited API responses).
+Se agregaron tests de integración básicos luego de la entrega, en una rama separada, para validar estados clave de la interfaz (carga, ausencia de datos y renderizado con respuestas limitadas de la API).
 
-Tests focus on visible behavior rather than internal implementation details.
+Los tests se enfocan en el comportamiento visible de la aplicación y no en los detalles internos de implementación.
